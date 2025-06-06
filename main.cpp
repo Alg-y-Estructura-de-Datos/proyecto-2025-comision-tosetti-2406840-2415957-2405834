@@ -38,31 +38,6 @@ class SistemaVentas {
 private:
     // ===== ALMACENAMIENTO PRINCIPAL =====
     vector<VentaRecord> todasLasVentas;  // La "caja grande" con todos los datos
-    
-    // ===== ALMACENAMIENTO PARA RESPUESTAS RÁPIDAS =====
-    // Ventas por ciudad en cada país: ventasPorCiudad["Peru"]["Lima"] = 50000
-    unordered_map<string, unordered_map<string, double>> ventasPorCiudad;
-    
-    // Ventas por producto en cada país: ventasPorProducto["Peru"]["Laptop"] = 25000
-    unordered_map<string, unordered_map<string, double>> ventasPorProducto;
-    
-    // Cantidad de productos vendidos: cantidadPorProducto["Laptop"] = 150
-    unordered_map<string, int> cantidadPorProducto;
-    
-    // Ventas por categoría en cada país: ventasPorCategoria["Peru"]["Electronics"] = {total, count}
-    unordered_map<string, unordered_map<string, pair<double, int>>> ventasPorCategoria;
-    
-    // Medio de envío más usado por país: enviosPorPais["Peru"]["Express"] = 45
-    unordered_map<string, unordered_map<string, int>> enviosPorPais;
-    
-    // Medio de envío más usado por categoría: enviosPorCategoria["Electronics"]["Express"] = 30
-    unordered_map<string, unordered_map<string, int>> enviosPorCategoria;
-    
-    // Ventas por fecha: ventasPorFecha["2024-01-15"] = 15000
-    unordered_map<string, double> ventasPorFecha;
-    
-    // Estados de envío por país: estadosPorPais["Peru"]["Delivered"] = 40
-    unordered_map<string, unordered_map<string, int>> estadosPorPais;
 
     // ===== PARSEAR UNA LÍNEA DEL CSV =====
     VentaRecord parsearLinea(const string& linea) {
@@ -100,33 +75,7 @@ private:
         return venta;
     }
     
-    // ===== ACTUALIZAR TODAS LAS ESTADÍSTICAS =====
-    void actualizarEstadisticas(const VentaRecord& venta) {
-        // 1. Ventas por ciudad
-        ventasPorCiudad[venta.pais][venta.ciudad] += venta.monto_total;
-        
-        // 2. Ventas por producto
-        ventasPorProducto[venta.pais][venta.producto] += venta.monto_total;
-        
-        // 3. Cantidad por producto (para producto más/menos vendido)
-        cantidadPorProducto[venta.producto] += venta.cantidad;
-        
-        // 4. Ventas por categoría (para promedio)
-        ventasPorCategoria[venta.pais][venta.categoria].first += venta.monto_total;
-        ventasPorCategoria[venta.pais][venta.categoria].second += 1;
-        
-        // 5. Medio de envío por país
-        enviosPorPais[venta.pais][venta.medio_envio]++;
-        
-        // 6. Medio de envío por categoría
-        enviosPorCategoria[venta.categoria][venta.medio_envio]++;
-        
-        // 7. Ventas por fecha
-        ventasPorFecha[venta.fecha] += venta.monto_total;
-        
-        // 8. Estados por país
-        estadosPorPais[venta.pais][venta.estado_envio]++;
-    }
+    
 
 public:
     // ===== FUNCIÓN PRINCIPAL: CARGAR CSV =====
@@ -154,7 +103,7 @@ public:
             todasLasVentas.push_back(venta);
             
             // 2. Actualizar todas las cajas auxiliares
-            actualizarEstadisticas(venta);
+
             
             numVentas++;
             contadorIfs++; // Contar el if del while
@@ -173,109 +122,26 @@ public:
     }
     
     // ===== REPROCESAR DATOS (después de modificaciones) =====
-    void reprocesarDatos() {
-        cout << "Reprocesando datos..." << endl;
-        auto inicio = chrono::high_resolution_clock::now();
-        
-        // Limpiar todas las estructuras auxiliares
-        ventasPorCiudad.clear();
-        ventasPorProducto.clear();
-        cantidadPorProducto.clear();
-        ventasPorCategoria.clear();
-        enviosPorPais.clear();
-        enviosPorCategoria.clear();
-        ventasPorFecha.clear();
-        estadosPorPais.clear();
-        
-        // Recalcular todo
-        for (const auto& venta : todasLasVentas) {
-            actualizarEstadisticas(venta);
-        }
-        
-        auto fin = chrono::high_resolution_clock::now();
-        auto duracion = chrono::duration_cast<chrono::milliseconds>(fin - inicio);
-        
-        cout << "✓ Datos reprocesados en " << duracion.count() << " ms" << endl;
-    }
+    
     
     // ===== MOSTRAR TOP 5 CIUDADES POR PAÍS =====
     void mostrarTop5Ciudades(const string& pais) {
-        cout << "\n=== TOP 5 CIUDADES CON MAYOR MONTO DE VENTAS EN " << pais << " ===" << endl;
-        
-        if (ventasPorCiudad.find(pais) == ventasPorCiudad.end()) {
-            cout << "No se encontraron datos para el país: " << pais << endl;
-            return;
-        }
         
         // Convertir a vector para ordenar
-        vector<pair<double, string>> ciudades;
-        for (const auto& ciudad : ventasPorCiudad[pais]) {
-            ciudades.push_back({ciudad.second, ciudad.first});
-        }
+        
         
         // Ordenar por monto (descendente)
-        sort(ciudades.rbegin(), ciudades.rend());
+        
         
         // Mostrar top 5
-        int limite = min(5, (int)ciudades.size());
-        for (int i = 0; i < limite; i++) {
-            cout << (i+1) << ". " << ciudades[i].second 
-                 << " - $" << fixed << setprecision(2) << ciudades[i].first << endl;
-        }
-        cout << "Algoritmo utilizado: HashMap + Ordenamiento (O(n log n))" << endl;
+        
     }
     
     // ===== MOSTRAR PRODUCTO MÁS Y MENOS VENDIDO =====
-    void mostrarProductosExtremos() {
-        cout << "\n=== PRODUCTOS MÁS Y MENOS VENDIDOS (POR CANTIDAD) ===" << endl;
-        
-        if (cantidadPorProducto.empty()) {
-            cout << "No hay datos disponibles." << endl;
-            return;
-        }
-        
-        string productoMas, productoMenos;
-        int cantidadMas = 0, cantidadMenos = INT_MAX;
-        
-        for (const auto& producto : cantidadPorProducto) {
-            if (producto.second > cantidadMas) {
-                cantidadMas = producto.second;
-                productoMas = producto.first;
-            }
-            if (producto.second < cantidadMenos) {
-                cantidadMenos = producto.second;
-                productoMenos = producto.first;
-            }
-        }
-        
-        cout << "Producto MÁS vendido: " << productoMas << " (" << cantidadMas << " unidades)" << endl;
-        cout << "Producto MENOS vendido: " << productoMenos << " (" << cantidadMenos << " unidades)" << endl;
-        cout << "Algoritmo utilizado: Búsqueda lineal en HashMap (O(n))" << endl;
-    }
+    
     
     // ===== MOSTRAR DÍA CON MAYOR VENTA =====
-    void mostrarDiaMayorVenta() {
-        cout << "\n=== DÍA CON MAYOR MONTO DE VENTAS ===" << endl;
-        
-        if (ventasPorFecha.empty()) {
-            cout << "No hay datos disponibles." << endl;
-            return;
-        }
-        
-        string mejorFecha;
-        double mejorMonto = 0;
-        
-        for (const auto& fecha : ventasPorFecha) {
-            if (fecha.second > mejorMonto) {
-                mejorMonto = fecha.second;
-                mejorFecha = fecha.first;
-            }
-        }
-        
-        cout << "Fecha con mayor monto de ventas: " << mejorFecha 
-             << " - $" << fixed << setprecision(2) << mejorMonto << endl;
-        cout << "Algoritmo utilizado: Búsqueda del máximo en HashMap (O(n))" << endl;
-    }
+    
     
     // ===== MOSTRAR MENÚ PRINCIPAL =====
     void mostrarMenu() {
@@ -301,7 +167,7 @@ int main() {
     do {
         sistema.mostrarMenu();
         cin >> opcion;
-        
+        cout << "option recieved";
         switch (opcion) {
             case 1:
                 cout << "Ingrese el nombre del archivo CSV: ";
@@ -316,11 +182,11 @@ int main() {
                 break;
                 
             case 3:
-                sistema.mostrarProductosExtremos();
+                
                 break;
                 
             case 4:
-                sistema.mostrarDiaMayorVenta();
+                
                 break;
                 
             case 5:
