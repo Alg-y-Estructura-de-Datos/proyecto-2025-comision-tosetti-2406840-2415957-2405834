@@ -33,11 +33,17 @@ struct VentaRecord {
     string estado_envio;
 };
 
+
+
 // ===== CLASE PRINCIPAL DEL SISTEMA =====
 class SistemaVentas {
 private:
     // ===== ALMACENAMIENTO PRINCIPAL =====
     vector<VentaRecord> todasLasVentas;  // La "caja grande" con todos los datos
+
+    vector<string> top5Ciudades;
+
+    
 
     // ===== PARSEAR UNA LÍNEA DEL CSV =====
     VentaRecord parsearLinea(const string& linea) {
@@ -121,6 +127,10 @@ public:
         cout << "✓ Algoritmo: Lectura secuencial con HashMap para agregaciones (O(n))" << endl;
         cout << "----------------------------------------" << endl;
     }
+
+    void actualizar_estadisticas(){
+
+    }
     
     // ===== REPROCESAR DATOS (después de modificaciones) =====
     
@@ -143,11 +153,14 @@ public:
         cout << "\n========================================" << endl;
         cout << "    SISTEMA DE ANÁLISIS DE VENTAS" << endl;
         cout << "========================================" << endl;
-        cout << "1. Cargar datos desde CSV" << endl;
-        cout << "2. Mostrar top 5 ciudades por país" << endl;
-        cout << "3. Mostrar productos más y menos vendidos" << endl;
-        cout << "4. Mostrar día con mayor venta" << endl;
-        cout << "5. Salir" << endl;
+        cout << "1. Agregar Venta" << endl;
+        cout << "2. Eliminar Una Venta" << endl;
+        cout << "3. Modificar Una Venta" << endl;
+        cout << "4. Ventas de una Ciudad Especificas" << endl;
+        cout << "5. Ventas en rango de Fecha por Pais" << endl;
+        cout << "6. Comparacio 2 paises(monto total, prod + vend, envio + usado)" << endl;
+        cout << "7. Comparacio 2 prod(cant total vendida y monto total / cada pais)" << endl;
+        cout << "8. Productos vendidos en promedio por debajo de(por pais): " << endl;
         cout << "========================================" << endl;
         cout << "Seleccione una opción: ";
     }
