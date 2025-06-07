@@ -97,6 +97,7 @@ public:
         
         int numVentas = 0;
         while (getline(archivo, linea)) {
+
             VentaRecord venta = parsearLinea(linea);
             
             // 1. Guardar en la caja principal
@@ -126,15 +127,9 @@ public:
     
     // ===== MOSTRAR TOP 5 CIUDADES POR PAÍS =====
     void mostrarTop5Ciudades(const string& pais) {
-        
         // Convertir a vector para ordenar
-        
-        
         // Ordenar por monto (descendente)
-        
-        
         // Mostrar top 5
-        
     }
     
     // ===== MOSTRAR PRODUCTO MÁS Y MENOS VENDIDO =====
@@ -156,6 +151,42 @@ public:
         cout << "========================================" << endl;
         cout << "Seleccione una opción: ";
     }
+
+    // ===== MOSTRAR TODAS LAS VENTAS =====
+void mostrarTodasLasVentas() const {
+    cout << left << setw(5) << "ID"
+         << setw(12) << "Fecha"
+         << setw(15) << "País"
+         << setw(18) << "Ciudad"
+         << setw(18) << "Cliente"
+         << setw(18) << "Producto"
+         << setw(15) << "Categoría"
+         << setw(10) << "Cantidad"
+         << setw(15) << "P.Unitario"
+         << setw(15) << "Total"
+         << setw(12) << "Medio"
+         << setw(15) << "Estado" << endl;
+
+    cout << string(168, '-') << endl;
+
+    for (const VentaRecord& v : todasLasVentas) {
+        cout << left << setw(5) << v.id_venta
+             << setw(12) << v.fecha
+             << setw(15) << v.pais
+             << setw(18) << v.ciudad
+             << setw(18) << v.cliente
+             << setw(18) << v.producto
+             << setw(15) << v.categoria
+             << setw(10) << v.cantidad
+             << setw(15) << fixed << setprecision(2) << v.precio_unitario
+             << setw(15) << fixed << setprecision(2) << v.monto_total
+             << setw(12) << v.medio_envio
+             << setw(15) << v.estado_envio
+             << endl;
+    }
+}
+
+
 };
 
 // ===== FUNCIÓN PRINCIPAL =====
@@ -163,7 +194,7 @@ int main() {
     SistemaVentas sistema;
     int opcion;
     string nombreArchivo, pais;
-    
+    sistema.cargarCSV("./data/ventas_sudamerica.csv");
     do {
         sistema.mostrarMenu();
         cin >> opcion;
@@ -192,7 +223,9 @@ int main() {
             case 5:
                 cout << "¡Gracias por usar el sistema!" << endl;
                 break;
-                
+            case 6:
+                sistema.mostrarTodasLasVentas();
+                break;
             default:
                 cout << "Opción inválida. Intente nuevamente." << endl;
         }
@@ -207,3 +240,5 @@ int main() {
     
     return 0;
 }
+
+/* A ELIMINAR*/
