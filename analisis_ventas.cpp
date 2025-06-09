@@ -11,7 +11,7 @@
 #include <set>
 #include <vector>
 #include <algorithm>
-
+#include <chrono>
     
 
 using namespace std;
@@ -66,7 +66,7 @@ void actualizarHashmapsEliminar(const Venta& v);
 
 
 // 1. Top 5 ciudades por país (usando ciudadesPorPais)
-void mostrarTop5CiudadesPorPais_Hash() {
+void mostrarTop5CiudadesPorPais_Hash(double& ifs) {
     Lista<string> paises = ciudadesPorPais.claves();
     std::set<string> paisesUnicos;
     for (int i = 0; i < paises.getTamanio(); i++) paisesUnicos.insert(paises.getDato(i));
@@ -98,7 +98,7 @@ void mostrarTop5CiudadesPorPais_Hash() {
 }
 
 // 2. Monto total por producto y país (usando productoPorPais)
-void mostrarMontoTotalPorProductoYPais_Hash() {
+void mostrarMontoTotalPorProductoYPais_Hash(double& ifs) {
     Lista<string> paises = productoPorPais.claves();
     std::set<string> paisesUnicos;
     for (int i = 0; i < paises.getTamanio(); i++) paisesUnicos.insert(paises.getDato(i));
@@ -125,7 +125,7 @@ void mostrarMontoTotalPorProductoYPais_Hash() {
 }
 
 // 3. Medio de envio mas utilizado por país (usando medioPorPais)
-void mostrarMedioEnvioMasUtilizadoPorPais_Hash() {
+void mostrarMedioEnvioMasUtilizadoPorPais_Hash(double& ifs) {
     Lista<string> paises = medioPorPais.claves();
     std::set<string> paisesUnicos;
     for (int i = 0; i < paises.getTamanio(); i++) paisesUnicos.insert(paises.getDato(i));
@@ -141,6 +141,7 @@ void mostrarMedioEnvioMasUtilizadoPorPais_Hash() {
             for (const auto& medio : mediosUnicos) {
                 try {
                     int cantidad = medioCantidad.get(medio);
+                    ifs++;
                     if (cantidad > maxCantidad) {
                         maxCantidad = cantidad;
                         mejorMedio = medio;
@@ -162,7 +163,7 @@ void mostrarMedioEnvioMasUtilizadoPorPais_Hash() {
 }
 
 // 4. Cantidad de ventas por categoria y país (usando categoriaPorPais)
-void mostrarPromedioPorCategoriaPorPais_Hash() {
+void mostrarPromedioPorCategoriaPorPais_Hash(double& ifs) {
     Lista<string> paises = categoriaPorPais.claves();
     std::set<string> paisesUnicos;
     for (int i = 0; i < paises.getTamanio(); i++) paisesUnicos.insert(paises.getDato(i));
@@ -189,7 +190,7 @@ void mostrarPromedioPorCategoriaPorPais_Hash() {
 }
 
 // 5. Medio de envio mas utilizado por categoria (usando medioPorCategoria)
-void mostrarMedioDeEnvioMasUtilizadoPorCategoria_Hash() {
+void mostrarMedioDeEnvioMasUtilizadoPorCategoria_Hash(double& ifs) {
     Lista<string> categorias = medioPorCategoria.claves();
     std::set<string> categoriasUnicas;
     for (int i = 0; i < categorias.getTamanio(); i++) categoriasUnicas.insert(categorias.getDato(i));
@@ -205,6 +206,7 @@ void mostrarMedioDeEnvioMasUtilizadoPorCategoria_Hash() {
             for (const auto& medio : mediosUnicos) {
                 try {
                     int cantidad = medioCantidad.get(medio);
+                    ifs++;
                     if (cantidad > maxCantidad) {
                         maxCantidad = cantidad;
                         mejorMedio = medio;
@@ -225,7 +227,7 @@ void mostrarMedioDeEnvioMasUtilizadoPorCategoria_Hash() {
 }
 
 // 6. Día con mayor monto total de ventas (usando montoPorFecha)
-void mostrarDiaConMayorCantidadDeVentas_Hash() {
+void mostrarDiaConMayorCantidadDeVentas_Hash(double& ifs) {
     Lista<string> fechas = montoPorFecha.claves();
     std::set<string> fechasUnicas;
     for (int i = 0; i < fechas.getTamanio(); i++) fechasUnicas.insert(fechas.getDato(i));
@@ -234,6 +236,7 @@ void mostrarDiaConMayorCantidadDeVentas_Hash() {
     for (const auto& fecha : fechasUnicas) {
         try {
             double monto = montoPorFecha.get(fecha);
+            ifs++;
             if (monto > maxMonto) {
                 maxMonto = monto;
                 mejorFecha = fecha;
@@ -251,7 +254,7 @@ void mostrarDiaConMayorCantidadDeVentas_Hash() {
 }
 
 // 7. Estado de envio más frecuente por país (usando estadoPorPais)
-void estadoDeEnvioMasFrecuentePorPais_Hash() {
+void estadoDeEnvioMasFrecuentePorPais_Hash(double& ifs) {
     Lista<string> paises = estadoPorPais.claves();
     std::set<string> paisesUnicos;
     for (int i = 0; i < paises.getTamanio(); i++) paisesUnicos.insert(paises.getDato(i));
@@ -267,6 +270,7 @@ void estadoDeEnvioMasFrecuentePorPais_Hash() {
             for (const auto& estado : estadosUnicos) {
                 try {
                     int cantidad = estadoCantidad.get(estado);
+                    ifs++;
                     if (cantidad > maxCantidad) {
                         maxCantidad = cantidad;
                         mejorEstado = estado;
@@ -286,7 +290,7 @@ void estadoDeEnvioMasFrecuentePorPais_Hash() {
 }
 
 // 8. Producto más vendido por cantidad (usando cantidadPorProducto)
-void mostrarProductoMasVendidoPorCantidad_Hash() {
+void mostrarProductoMasVendidoPorCantidad_Hash(double& ifs) {
     Lista<string> productos = cantidadPorProducto.claves();
     std::set<string> productosUnicos;
     for (int i = 0; i < productos.getTamanio(); i++) productosUnicos.insert(productos.getDato(i));
@@ -295,6 +299,7 @@ void mostrarProductoMasVendidoPorCantidad_Hash() {
     for (const auto& producto : productosUnicos) {
         try {
             int cantidad = cantidadPorProducto.get(producto);
+            ifs++;
             if (cantidad > maxCantidad) {
                 maxCantidad = cantidad;
                 mejorProducto = producto;
@@ -311,7 +316,7 @@ void mostrarProductoMasVendidoPorCantidad_Hash() {
 }
 
 // 9. Producto menos vendido por cantidad (usando cantidadPorProducto)
-void mostrarProductoMenosVendidoPorCantidad_Hash() {
+void mostrarProductoMenosVendidoPorCantidad_Hash(double& ifs) {
     Lista<string> productos = cantidadPorProducto.claves();
     std::set<string> productosUnicos;
     for (int i = 0; i < productos.getTamanio(); i++) productosUnicos.insert(productos.getDato(i));
@@ -320,6 +325,7 @@ void mostrarProductoMenosVendidoPorCantidad_Hash() {
     for (const auto& producto : productosUnicos) {
         try {
             int cantidad = cantidadPorProducto.get(producto);
+            ifs++;
             if (cantidad < minCantidad) {
                 minCantidad = cantidad;
                 peorProducto = producto;
@@ -514,15 +520,31 @@ void actualizarHashmapsAgregar(const Venta& v) {
 }
 
 void calcularEstadisticasVentas() {
-    mostrarTop5CiudadesPorPais_Hash();
-    mostrarMontoTotalPorProductoYPais_Hash();
-    mostrarMedioEnvioMasUtilizadoPorPais_Hash();
-    mostrarPromedioPorCategoriaPorPais_Hash();
-    mostrarMedioDeEnvioMasUtilizadoPorCategoria_Hash();
-    mostrarDiaConMayorCantidadDeVentas_Hash();
-    estadoDeEnvioMasFrecuentePorPais_Hash();
-    mostrarProductoMasVendidoPorCantidad_Hash();
-    mostrarProductoMenosVendidoPorCantidad_Hash();
+    
+    // comienza tiemppo
+    double ifs;
+    auto inicio = std::chrono::high_resolution_clock::now();
+    
+    mostrarTop5CiudadesPorPais_Hash(ifs);
+    mostrarMontoTotalPorProductoYPais_Hash(ifs);
+    mostrarMedioEnvioMasUtilizadoPorPais_Hash(ifs);
+    mostrarPromedioPorCategoriaPorPais_Hash(ifs);
+    mostrarMedioDeEnvioMasUtilizadoPorCategoria_Hash(ifs);
+    mostrarDiaConMayorCantidadDeVentas_Hash(ifs);
+    estadoDeEnvioMasFrecuentePorPais_Hash(ifs);
+    mostrarProductoMasVendidoPorCantidad_Hash(ifs);
+    mostrarProductoMenosVendidoPorCantidad_Hash(ifs);
+
+
+    cout<<"Ifs totales utilizados: "<<ifs<<endl;
+
+     auto fin = std::chrono::high_resolution_clock::now();
+
+    // Duración en milisegundos
+    auto duracion = std::chrono::duration_cast<std::chrono::milliseconds>(fin - inicio).count();
+
+    std::cout << "Tiempo de ejecucion: " << duracion << " ms" << std::endl;
+    
     
 }
 
